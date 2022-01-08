@@ -14,14 +14,13 @@ doWork("刷牙", 2000, (err, result) => {
   // 刷牙 --> 吃早餐 --> 寫功課
   let dt = new Date();
   console.log(`${result} at ${dt.toISOString()}`);
-});
+  doWork("吃早餐", 3000, (err, result) => {
+    let dt = new Date();
+    console.log(`${result} at ${dt.toISOString()}`);
 
-doWork("吃早餐", 3000, (err, result) => {
-  let dt = new Date();
-  console.log(`${result} at ${dt.toISOString()}`);
-});
-
-doWork("寫功課", 2000, (err, result) => {
-  let dt = new Date();
-  console.log(`${result} at ${dt.toISOString()}`);
+    doWork("寫功課", 2000, (err, result) => {
+      let dt = new Date();
+      console.log(`${result} at ${dt.toISOString()}`);
+    });
+  });
 });
