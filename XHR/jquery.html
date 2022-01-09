@@ -1,0 +1,30 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>XHR</title>
+  </head>
+  <body>
+    <button id="asyncBtn">非同步</button>
+    <div id="response">message</div>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      var responseDom = document.getElementById("response");
+
+      var asyncBtn = document.getElementById("asyncBtn");
+      asyncBtn.addEventListener("click", function () {
+        responseDom.innerText = "開始「非」同步請求";
+        $.ajax("http://34.221.173.92:3000/data", { method: "GET" })
+          .done((order) => {
+            console.log(order);
+          })
+          .fail((xhr, status) => {
+            console.error(`發生錯誤 ${status}`);
+          });
+      });
+    </script>
+  </body>
+</html>
