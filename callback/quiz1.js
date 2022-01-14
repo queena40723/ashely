@@ -1,6 +1,6 @@
 async function test() {
   console.log(1);
-  new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     setTimeout(() => {
       console.log(2);
       resolve();
