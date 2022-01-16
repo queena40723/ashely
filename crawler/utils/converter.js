@@ -14,7 +14,7 @@ function parseStockName(stockNameData) {
   return stockDatas[1];
 }
 
-// TODO: 處理價格資料
+// 處理價格資料
 function convertPrice(priceData, stockNo) {
   let processData = priceData.data.map((d) => {
     // 處理民國年轉西元年
