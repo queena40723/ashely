@@ -13,6 +13,13 @@ let app = express();
 // next: 往下一關走
 // res.xxx 結束這次的旅程 (req-res cycle)
 
+// 設定 express 要用的樣版引擎(template engine)
+// 設定視圖檔案要放在哪裡
+app.set("views", path.join(__dirname, "views"));
+// 要用哪一種 template engine
+// npm i pug
+app.set("view engine", "pug");
+
 // 使用 express 內建的中間件
 // 靜態檔案: 圖片、js 檔案、css 檔案, html...
 // 寫法1: 不要有 網址 prefix
@@ -40,7 +47,13 @@ app.use((req, res, next) => {
 // app.get("/", function(request, response, next) {});
 app.get("/", (req, res, next) => {
   console.info("拜訪首頁");
-  res.send("Hello Express");
+  // 純文字
+  // res.send("Hello Express");
+  // 用 view engine 來渲染一個頁面
+  // 這個 SSR (server-side render)
+  res.render("index", {
+    stocks: ["台積電", "長榮", "聯發科"],
+  });
 });
 
 app.get("/about", (req, res, next) => {
@@ -49,9 +62,12 @@ app.get("/about", (req, res, next) => {
   next();
 });
 
+app.get("/checkout", (req, res, next) => {});
+
 app.get("/about", (req, res, next) => {
   console.info("這是關於我們 B");
-  res.send("我們是 MFEE22 - Plan B");
+  // res.send("我們是 MFEE22 - Plan B");
+  res.render("about");
 });
 
 app.get("/contact", (req, res, next) => {
