@@ -3,6 +3,8 @@ const express = require("express");
 require("dotenv").config();
 // path 是 nodejs 內建的 lib
 const path = require("path");
+const connection = require("./utils/db");
+
 // 利用 express 這個 library 來建立一個 web app (express instance)
 let app = express();
 
@@ -75,6 +77,15 @@ app.get("/contact", (req, res, next) => {
   // 故意製造錯誤，測試錯誤處理中間件
   throw new Error("故意製造的錯誤");
   res.send("這是聯絡我們");
+});
+
+// RESTful API 的列表
+app.get("/api/stocks", async (req, res, next) => {
+  let [data, fields] = await connection.execute("SELECT * FROM stocks");
+  console.log(data);
+  // res.send ==> 純文字
+  // res.render ==> server-side render 會去找樣板
+  res.json(data);
 });
 
 // 在所有路由中間件的後
