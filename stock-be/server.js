@@ -45,9 +45,26 @@ app.get("/about", (req, res, next) => {
   res.send("我們是 MFEE22 - Plan B");
 });
 
+app.get("/contact", (req, res, next) => {
+  console.info("有人訪問聯絡我們");
+  // 故意製造錯誤，測試錯誤處理中間件
+  throw new Error("故意製造的錯誤");
+  res.send("這是聯絡我們");
+});
+
+// 在所有路由中間件的後
+// 既然前面都比對不到，那表示這裡是 404
+// 利用「順序」這件事來做 404
 app.use((req, res, next) => {
-  console.log("這是一個在首頁後面的的中間件");
-  next();
+  console.log("在所有路由中間件的後面 -> 404");
+  res.status(404).send("Not Found");
+});
+
+// 錯誤中間件：放在所有中間件的後面
+// 有四個參數，是用來「捕捉」錯誤的
+app.use((err, req, res, next) => {
+  console.log("來自四個參數的錯誤處理中間件", err);
+  res.status(500).send("Server 錯誤: 請洽系統管理員");
 });
 
 const port = process.env.SERVER_PORT || 3000;
