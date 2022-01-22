@@ -1,8 +1,8 @@
 // 引入 express
-const { application } = require("express");
 const express = require("express");
 require("dotenv").config();
-
+// path 是 nodejs 內建的 lib
+const path = require("path");
 // 利用 express 這個 library 來建立一個 web app (express instance)
 let app = express();
 
@@ -13,7 +13,16 @@ let app = express();
 // next: 往下一關走
 // res.xxx 結束這次的旅程 (req-res cycle)
 
-// 一般中間件
+// 使用 express 內建的中間件
+// 靜態檔案: 圖片、js 檔案、css 檔案, html...
+// 寫法1: 不要有 網址 prefix
+// localhost:3002/images/test.png
+app.use(express.static(path.join(__dirname, "assets")));
+// 寫法2: 有網址的 prefix
+// localhost:3002/static/index.html --> 網址上就會有這個 url prefix
+app.use("/static", express.static(path.join(__dirname, "public")));
+
+// 一般中間件(自己開發的)
 // app.use(function (request, response, next) {});
 app.use((req, res, next) => {
   let current = new Date();
