@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_URL } from "../utils/config";
 
 const StockDetails = () => {
   const [error, setError] = useState(null);
@@ -8,6 +9,7 @@ const StockDetails = () => {
   // 總共有 lastPage 這麼多頁
   const [lastPage, setLastPage] = useState(1);
 
+  // 為了處理網址
   let navigate = useNavigate();
 
   // 把網址上的 :stockId 拿出來
@@ -21,7 +23,7 @@ const StockDetails = () => {
   useEffect(() => {
     let getPrices = async () => {
       let response = await axios.get(
-        `http://localhost:3002/api/stock/${stockId}?page=${page}`
+        `${API_URL}/stock/${stockId}?page=${page}`
       );
       setData(response.data.data);
       setLastPage(response.data.pagination.lastPage);
