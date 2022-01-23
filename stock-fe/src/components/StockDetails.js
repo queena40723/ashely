@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const StockDetails = () => {
@@ -7,6 +7,8 @@ const StockDetails = () => {
   const [data, setData] = useState([]);
   // 總共有 lastPage 這麼多頁
   const [lastPage, setLastPage] = useState(1);
+
+  let navigate = useNavigate();
 
   // 把網址上的 :stockId 拿出來
   const { stockId } = useParams();
@@ -47,6 +49,7 @@ const StockDetails = () => {
           key={i}
           onClick={(e) => {
             setPage(i);
+            navigate(`/stock/${stockId}/${i}`);
           }}
         >
           {i}
