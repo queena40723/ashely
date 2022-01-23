@@ -3,7 +3,7 @@ const express = require("express");
 require("dotenv").config();
 // path 是 nodejs 內建的 lib
 const path = require("path");
-const connection = require("./utils/db");
+const cors = require("cors");
 
 // 利用 express 這個 library 來建立一個 web app (express instance)
 let app = express();
@@ -14,6 +14,9 @@ let app = express();
 // 中間件裡一定要有 next 或是 res.xxx
 // next: 往下一關走
 // res.xxx 結束這次的旅程 (req-res cycle)
+
+// 使用第三方開發的 cors 中間件
+app.use(cors());
 
 // 設定 express 要用的樣版引擎(template engine)
 // 設定視圖檔案要放在哪裡
@@ -64,8 +67,6 @@ app.get("/about", (req, res, next) => {
   next();
 });
 
-app.get("/checkout", (req, res, next) => {});
-
 app.get("/about", (req, res, next) => {
   console.info("這是關於我們 B");
   // res.send("我們是 MFEE22 - Plan B");
@@ -79,14 +80,11 @@ app.get("/contact", (req, res, next) => {
   res.send("這是聯絡我們");
 });
 
-// RESTful API 的列表
-app.get("/api/stocks", async (req, res, next) => {
-  let [data, fields] = await connection.execute("SELECT * FROM stocks");
-  console.log(data);
-  // res.send ==> 純文字
-  // res.render ==> server-side render 會去找樣板
-  res.json(data);
-});
+let stockRouter = require("./routers/stock");
+app.use("/api/stock", stockRouter);
+
+let memberRouter = require("./routers/member");
+app.use("/api/member", memberRouter);
 
 // 在所有路由中間件的後
 // 既然前面都比對不到，那表示這裡是 404

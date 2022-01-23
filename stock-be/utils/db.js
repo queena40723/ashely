@@ -1,6 +1,7 @@
 // stock-be/utils/db.js
 // npm i mysql2
 const mysql = require("mysql2");
+require("dotenv").config();
 
 // 把 createConnection -> createPool
 let pool = mysql.createPool({
@@ -11,6 +12,7 @@ let pool = mysql.createPool({
   database: process.env.DB_NAME,
   // 加上連線數限制
   connectionLimit: 10,
+  dateStrings: true,
 });
 
 // 傳回 pool.promise()
