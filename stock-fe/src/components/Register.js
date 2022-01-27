@@ -21,7 +21,19 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      let response = await axios.post(`${API_URL}/auth/register`, member);
+      // 方法1: 這個沒有圖片上傳
+      // let response = await axios.post(`${API_URL}/auth/register`, member);
+      // console.log(response.data);
+
+      // 方法2: 要圖片上傳要用 FormData
+      let formData = new FormData();
+      formData.append("email", member.email);
+      formData.append("name", member.name);
+      formData.append("password", member.password);
+      formData.append("confirmPassword", member.confirmPassword);
+      formData.append("photo", member.photo);
+
+      let response = await axios.post(`${API_URL}/auth/register`, formData);
       console.log(response.data);
     } catch (e) {
       // console.error("error", e.response.data);
@@ -95,6 +107,10 @@ const Register = () => {
           type="file"
           id="photo"
           name="photo"
+          onChange={(e) => {
+            // 圖片儲存的方式不太一樣
+            setMember({ ...member, photo: e.target.files[0] });
+          }}
         />
       </div>
       <button
