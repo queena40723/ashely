@@ -18,6 +18,13 @@ let app = express();
 // 使用第三方開發的 cors 中間件
 app.use(cors());
 
+// express.urlencoded 要讓 express 認得 body 裡的資料
+// extended: false -> querystring
+// extended: true -> qs
+app.use(express.urlencoded({ extended: true }));
+//  要讓 express 認得 json
+app.use(express.json());
+
 // 設定 express 要用的樣版引擎(template engine)
 // 設定視圖檔案要放在哪裡
 app.set("views", path.join(__dirname, "views"));
@@ -85,6 +92,9 @@ app.use("/api/stock", stockRouter);
 
 let memberRouter = require("./routers/member");
 app.use("/api/member", memberRouter);
+
+let authRouter = require("./routers/auth");
+app.use("/api/auth", authRouter);
 
 // 在所有路由中間件的後
 // 既然前面都比對不到，那表示這裡是 404
