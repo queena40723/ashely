@@ -17,6 +17,7 @@ const registerRules = [
 ];
 
 const multer = require("multer");
+const { resourceUsage } = require("process");
 // 圖片要存哪裡？
 const storage = multer.diskStorage({
   // 設定儲存的目的地(檔案夾)
@@ -108,5 +109,53 @@ router.post(
     res.json({ message: "ok" });
   }
 );
+
+router.post("/login", async (req, res, next) => {
+  // 確認有沒有這個帳號
+  let [members] = await connection.execute(
+    "SELECT * FROM members WHERE email=?",
+    [req.body.email]
+  );
+  console.log(members);
+  if (members.length === 0) {
+    // 查不到，表示根本沒註冊過
+    return res.status(400).send({
+      code: "33003",
+      msg: "帳號或密碼錯誤",
+    });
+  }
+  // 把會員資料從陣列中拿出來
+  let member = members[0];
+
+  // 如果有這個帳號，再去比對密碼
+  let result = await bcrypt.compare(req.body.password, member.password);
+  if (!result) {
+    // 如果比對失敗
+    return res.status(400).send({
+      code: "33004",
+      msg: "帳號或密碼錯誤",
+    });
+  }
+  // 整理需要的資料
+  let returnMember = {
+    id: member.id,
+    name: member.name,
+    photo: member.photo,
+  };
+
+  // 如果密碼比對成功，記錄在 session
+  // 寫 session
+  req.session.member = returnMember;
+
+  res.json({
+    code: "0",
+    data: returnMember,
+  });
+});
+
+router.get("/logout", (req, res, next) => {
+  req.session.member = null;
+  res.sendStatus(202);
+});
 
 module.exports = router;

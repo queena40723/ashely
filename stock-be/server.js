@@ -16,7 +16,13 @@ let app = express();
 // res.xxx 結束這次的旅程 (req-res cycle)
 
 // 使用第三方開發的 cors 中間件
-app.use(cors());
+app.use(
+  cors({
+    // 為了要讓 browser 在 CORS 的情況下還是幫我們送 cookie
+    origin: ["http://localhost:3000"],
+    credentials: true,
+  })
+);
 
 // express.urlencoded 要讓 express 認得 body 裡的資料
 // extended: false -> querystring
@@ -24,6 +30,20 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 //  要讓 express 認得 json
 app.use(express.json());
+
+// 啟用 session
+const expressSession = require("express-session");
+let FileStore = require("session-file-store")(expressSession);
+app.use(
+  expressSession({
+    store: new FileStore({
+      path: path.join(__dirname, "..", "sessions"),
+    }),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // 設定 express 要用的樣版引擎(template engine)
 // 設定視圖檔案要放在哪裡
