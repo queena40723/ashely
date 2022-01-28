@@ -2,16 +2,21 @@ import { useState } from "react";
 import axios from "axios";
 import { API_URL } from "../utils/config";
 import { ERR_MSG } from "../utils/error";
+import { useAuth } from "../context/auth";
+import { Navigate } from "react-router-dom";
 
 const Login = () => {
+  const { member, setMember } = useAuth();
+  const [loginMember, setLoginMember] = useState({ email: "", password: "" });
+  const [isLogin, setIsLogin] = useState(false);
   // 因為教學所以設定預設值
-  const [member, setMember] = useState({
-    email: "ashleylai58@gmail.com",
-    password: "test1234",
-  });
+  // const [member, setMember] = useState({
+  //   email: "ashleylai58@gmail.com",
+  //   password: "test1234",
+  // });
 
   function handleChange(e) {
-    setMember({ ...member, [e.target.name]: e.target.value });
+    setLoginMember({ ...loginMember, [e.target.name]: e.target.value });
   }
 
   async function handleSubmit(e) {
@@ -20,15 +25,23 @@ const Login = () => {
 
     try {
       // 方法1: 這個沒有圖片上傳
-      let response = await axios.post(`${API_URL}/auth/login`, member, {
+      let response = await axios.post(`${API_URL}/auth/login`, loginMember, {
         // 為了跨源存取 cookie
         withCredentials: true,
       });
       console.log(response.data);
+      // 把 member 資料存回 context 讓其他地方可以用
+      setMember(response.data.data);
+      setIsLogin(true);
     } catch (e) {
       // console.error("error", e.response.data);
       console.error("測試登入", ERR_MSG[e.response.data.code]);
     }
+  }
+
+  if (isLogin) {
+    // 轉頁效果
+    return <Navigate to="/about" />;
   }
 
   return (
@@ -45,7 +58,7 @@ const Login = () => {
           type="text"
           id="email"
           name="email"
-          value={member.email}
+          value={loginMember.email}
           onChange={handleChange}
         />
       </div>
@@ -58,7 +71,7 @@ const Login = () => {
           type="password"
           id="password"
           name="password"
-          value={member.password}
+          value={loginMember.password}
           onChange={handleChange}
         />
       </div>
